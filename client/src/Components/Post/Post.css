@@ -1,0 +1,36 @@
+*{
+    margin: 0;
+padding: 0;
+}
+
+img{
+    max-width: 100%;
+}
+
+div.post{
+    display: flex;
+    margin: 10px;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+div.image{
+    max-width: 30%;
+}
+
+div.content{
+    max-width: 50%;
+    width: 40%;
+}
+
+div.content > .title{
+    padding:  0 0 20px 0;
+}
+
+div.content .info{
+    display: flex;
+    gap: 10px;
+    padding-bottom: 10px;
+}
