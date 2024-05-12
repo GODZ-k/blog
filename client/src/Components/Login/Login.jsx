@@ -1,11 +1,14 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {useNavigate} from "react-router-dom"
+import { UserContext } from "../../Context/userContext";
 
 function Login() {
   const navigate = useNavigate()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const {userInfo , setUserInfo} = useContext(UserContext)
 
   async function LoginUser(e) {
     e.preventDefault();
@@ -22,6 +25,7 @@ function Login() {
     );
 
     if(response.data){
+      setUserInfo(response.data)
       navigate("/")
     }else{
       alert(response.data.msg)

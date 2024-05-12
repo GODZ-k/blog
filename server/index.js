@@ -3,6 +3,7 @@ import express, { urlencoded } from "express"
 import cors from "cors"
 import { User } from "./models/user.model.js";
 import cookieParser from "cookie-parser";
+import verifyJWT from "./middleware/auth.middleware.js";
 
 const app =  express()
 app.use(express.json())
@@ -31,6 +32,7 @@ async function generateAccessAndRefreshToken(userId){
         })
     }
 }
+
 
 app.post("/register" ,async (req,res)=>{
 
@@ -71,6 +73,7 @@ try {
 }
 })
 
+
 app.post("/login" , async(req,res)=>{
     const {email,password} = req.body
     try {
@@ -109,11 +112,61 @@ app.post("/login" , async(req,res)=>{
         .cookie("accessToken" , AccessToken , options)
         .cookie("refreshToken", refreshToken, options)
         .json({
+            email:user.email,
             msg:"User loggedin successfully"
         })
 
     } catch (error) {
         console.log(error)
+        return res.status(500).json({
+            msg:"Internal server error"
+        })
+    }
+})
+
+
+app.get("/profile" , verifyJWT , async(req,res)=>{
+    try {
+        const {_id} = req.user
+        console.log(_id)
+
+        const user = await User.findById(_id)
+
+        return res.status(200).json({
+            email:user.email
+        })
+    } catch (error) {
+        return res.status(500).json({
+            msg:"Internal server error"
+        })
+    }
+})
+
+
+app.get("/logout" ,verifyJWT ,async (req,res)=>{
+    try {
+        const {_id} = req.user
+
+        const user = await User.findById(_id)
+
+        if(!user){
+            return res.status(400).json({
+                msg:"Unauthorized access"
+            })
+        }
+
+        const options = {
+            httpOnly:true,
+            path:"/"
+        }
+
+        return res.status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken",options)
+        .json({
+            msg:"user loggedout successfully"
+        })
+    } catch (error) {
         return res.status(500).json({
             msg:"Internal server error"
         })
