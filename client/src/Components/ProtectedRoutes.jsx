@@ -6,22 +6,7 @@ function ProtectedRoutes({children}) {
     const {userInfo} = useContext(UserContext)
     const location =  useLocation()
 
-    const [redirect , setRedirect ] = useState("")
-    const [authenticated , setAuthenticated] = useState(false)
-
-    useEffect(()=>{
-        if(!userInfo.email){
-            setAuthenticated(false)
-        }else{
-            setAuthenticated(true)
-            setRedirect(location.pathname)
-        }
-    },[location,userInfo])
-   
-
-    console.log(redirect)
-
-    if(!authenticated){
+    if(!userInfo){
         return <Navigate to="/login"/>      
     }
     return children
