@@ -174,6 +174,30 @@ app.get("/logout" ,verifyJWT ,async (req,res)=>{
 })
 
 
+app.post("/add-post" , verifyJWT , async(req,res)=>{
+    try {
+        const {_id} = req.body
+
+        const user = await User.findById(_id)
+
+        if(!user){
+            return res.status(422).json({
+                msg:"Unauthorized access"
+            })
+        }
+
+        
+        return res.status(200).json({
+            msg:"blog added successfully"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            msg:"Internal server error"
+        })
+    }
+})
+
+
 app.listen(3000,()=>{
     console.log("listning on port on 3000")
 })
