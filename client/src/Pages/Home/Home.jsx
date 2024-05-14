@@ -16,7 +16,7 @@ function Home() {
   return (
     <>
    {blogs.map((blog)=>(
-    <Post title={blog.title} summary={blog.summary} image={blog.image} owner={blog.owner} createdAt={blog.createdAt}/>
+    <Post title={blog.title} id={blog._id} summary={blog.summary} image={blog.image} owner={blog.owner.email} createdAt={blog.createdAt}/>
    )) }
     </>
   )

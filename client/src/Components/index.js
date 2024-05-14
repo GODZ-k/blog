@@ -5,6 +5,7 @@ import Login from "./Login/Login";
 import Register from "./Register/Register";
 import CreatePost from "./Post/CreatePost";
 import ProtectedRoutes from "./ProtectedRoutes";
+import Detailpost from "./Post/Detailpost";
 
 export {
     Header,
@@ -13,5 +14,6 @@ export {
     Login,
     Register,
     CreatePost,
-    ProtectedRoutes
+    ProtectedRoutes,
+    Detailpost
 }

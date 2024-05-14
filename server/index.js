@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import express, { urlencoded } from "express"
+import express, { json, urlencoded } from "express"
 import cors from "cors"
 import { User } from "./models/user.model.js";
 import cookieParser from "cookie-parser";
@@ -222,7 +222,7 @@ app.post("/add-post" , verifyJWT , upload.single("image") , async(req,res)=>{
 
 app.get("/blogs", async(req,res)=>{
     try {
-        const blogs = await Blog.find({})
+        const blogs = await Blog.find().populate("owner",['email']).sort({createdAt:-1}).limit(20)
 
         if(!blogs.length){
             return res.status(200).json({
@@ -241,7 +241,27 @@ app.get("/blogs", async(req,res)=>{
     }
 })
 
+app.get("/blog/detail/:id", verifyJWT , async(req,res)=>{
+    try {
+        const id = req.params.id
 
+        const blog = await Blog.findById(id)
+
+        if(!blog){
+            return res.status(400).json({
+                msg:"blog not found"
+            })
+        }
+
+        return res.status(200).json({
+            blog
+        })
+    } catch (error) {
+        return res.status(500).json({
+            msg:"Internal server error"
+        })
+    }
+})
 app.listen(3000,()=>{
     console.log("listning on port on 3000")
 })
