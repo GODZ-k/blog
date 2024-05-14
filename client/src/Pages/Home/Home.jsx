@@ -1,15 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Post } from '../../Components'
+import axios from 'axios'
 
 function Home() {
+
+  const [blogs, setBlogs] =  useState([])
+
+  useEffect(()=>{
+    (async()=>{
+      const res = await axios.get("http://localhost:3000/blogs")
+      const data = res.data
+      setBlogs(data.blogs)
+    })()
+  },[])
   return (
     <>
-    <Post/>
-    <Post/>
-    <Post/>
-    <Post/>
-
-    
+   {blogs.map((blog)=>(
+    <Post title={blog.title} summary={blog.summary} image={blog.image} owner={blog.owner} createdAt={blog.createdAt}/>
+   )) }
     </>
   )
 }

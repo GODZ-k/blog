@@ -4,6 +4,9 @@ import cors from "cors"
 import { User } from "./models/user.model.js";
 import cookieParser from "cookie-parser";
 import verifyJWT from "./middleware/auth.middleware.js";
+import { upload } from "./middleware/multer.middleware.js";
+import uploadOnCloudinary from "./Cloudinary.js";
+import { Blog } from "./models/blog.model.js";
 
 const app =  express()
 app.use(express.json())
@@ -174,9 +177,11 @@ app.get("/logout" ,verifyJWT ,async (req,res)=>{
 })
 
 
-app.post("/add-post" , verifyJWT , async(req,res)=>{
+app.post("/add-post" , verifyJWT , upload.single("image") , async(req,res)=>{
     try {
-        const {_id} = req.body
+        const {_id} = req.user
+        const {title , summary , content } = req.body
+        const image = req.file ? req.file.path : null
 
         const user = await User.findById(_id)
 
@@ -186,10 +191,49 @@ app.post("/add-post" , verifyJWT , async(req,res)=>{
             })
         }
 
+        const uploadedImage = await uploadOnCloudinary(image)
+
+        if(!uploadOnCloudinary){
+            return res.status(500).json({
+                msg:"Internal server error"
+            })
+        }
+
+        const blog =  await Blog.create({
+            title,
+            summary,
+            content,
+            image:uploadedImage.url,
+            owner:_id
+        })
+
         
         return res.status(200).json({
+            blog,
             msg:"blog added successfully"
         })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            msg:"Internal server error"
+        })
+    }
+})
+
+app.get("/blogs", async(req,res)=>{
+    try {
+        const blogs = await Blog.find({})
+
+        if(!blogs.length){
+            return res.status(200).json({
+                msg:"No data found"
+            })
+        }
+
+        return res.status(200).json({
+            blogs
+        })
+
     } catch (error) {
         return res.status(500).json({
             msg:"Internal server error"
