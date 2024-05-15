@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import express, { json, urlencoded } from "express"
+import fs from "fs"
 import cors from "cors"
 import { User } from "./models/user.model.js";
 import cookieParser from "cookie-parser";
@@ -213,12 +214,16 @@ app.post("/add-post" , verifyJWT , upload.single("image") , async(req,res)=>{
             msg:"blog added successfully"
         })
     } catch (error) {
+        if(req.file){
+         fs.unlinkSync(req.file.path)
+        }
         console.log(error)
         return res.status(500).json({
             msg:"Internal server error"
         })
     }
 })
+
 
 app.get("/blogs", async(req,res)=>{
     try {
@@ -241,6 +246,7 @@ app.get("/blogs", async(req,res)=>{
     }
 })
 
+
 app.get("/blog/detail/:id", verifyJWT , async(req,res)=>{
     try {
         const id = req.params.id
@@ -262,6 +268,8 @@ app.get("/blog/detail/:id", verifyJWT , async(req,res)=>{
         })
     }
 })
+
+
 app.listen(3000,()=>{
     console.log("listning on port on 3000")
 })

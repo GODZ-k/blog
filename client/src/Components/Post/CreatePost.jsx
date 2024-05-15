@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useMemo, useState } from 'react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function CreatePost() {
 
@@ -10,11 +11,13 @@ function CreatePost() {
     const [summary , setSummary]  = useState('')
     const [image,setImage] = useState(null)
 
+    const navigate = useNavigate()
+
 
     console.log(content,title,summary,image)
 
     const addPost = async ()=>{
-        const res =  await axios.post("http://localhost:3000/add-post",{
+        await axios.post("http://localhost:3000/add-post",{
           content,
           title,
           summary,
@@ -24,6 +27,8 @@ function CreatePost() {
         "Content-Type":"multipart/form-data"
       },
       withCredentials:true
+    }).then(()=>{
+      navigate("/")
     })
 
         console.log(content,title,summary,image)
