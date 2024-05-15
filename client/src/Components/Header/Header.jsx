@@ -14,7 +14,6 @@ function Header() {
     });
 
     const data = res.data;
-
     setUserInfo(data);
   }
   useEffect(() => {

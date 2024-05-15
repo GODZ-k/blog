@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import moment from "moment"
+import { UserContext } from "../../Context/userContext";
 import "./Post.css";
 import { Link } from "react-router-dom";
 
 function Post({ title, image, id, summary, owner, createdAt }) {
+  const { userInfo } = useContext(UserContext)
   let timeago = moment(createdAt).fromNow()
 
     if(timeago === "a few seconds ago"){
